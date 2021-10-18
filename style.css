@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+}
+
+.container {
+    height: 80vmin;
+    width: 80vmin;
+    background-color: cadetblue;
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+    margin-top: 10vh;
+    margin-left: 50vh;
+}
+#snake {
+    border-radius: 10px;
+    background-color: chartreuse;
+    border: solid, black ,1vmin;
+    border-radius: 1vmin;
+}
+#food {
+    background-color: red;
+    border: solid, black, 1vmin;
+    border-radius: 4vmin;
+}
