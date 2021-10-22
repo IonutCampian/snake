@@ -24,16 +24,15 @@ function game(currentTime) {
 
 window.requestAnimationFrame(game);
 
-function drawSnake() {
+function drawSnake () {
     gameBoard.innerHTML = "";
-    for(var i = 0; i < 2; ++i) {
+    snakeBody.forEach(part => {
         const snakeBody = document.createElement('div');
         snakeBody.setAttribute("id", "snake");
-        snakeBody.style.gridRowStart = snake[i].x;
-        snakeBody.style.gridColumnStart = snake[i].y;
+        snakeBody.style.gridRowStart = part.x;
+        snakeBody.style.gridColumnStart = part.y;
         gameBoard.appendChild(snakeBody);
-    }
-}
+    })
 
 function drawFood() {
     const foodPard = document.createElement('div');
