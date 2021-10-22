@@ -1,15 +1,17 @@
-const snakeSpeed = 1;
+const snakeSpeed = 10;
 var LastRender = 0;
 const gameBoard = document.getElementById('game');
-const snake = [{x:9, y:6}];
+const snake = [{x:9, y:6}, {x:10, y: 7}];
 var inputKey = {x:0, y:0};
 let lastImput = {x: 0, y: 0};
+const growBy = 2;
 const food = {x: Math.floor(Math.random() * (20 - 1) +1),
                 y : Math.floor(Math.random() * (20 - 1) +1)}
 document.getElementById("game-over").style.visibility = "hidden";
+
 function game(currentTime) {
     window.requestAnimationFrame(game);
-    const secondsToRender = (currentTime - LastRender)/1000;
+    const secondsToRender = (currentTime - LastRender) / 1000;
     if(secondsToRender < 1 / snakeSpeed) {
         return;
     }
@@ -18,20 +20,19 @@ function game(currentTime) {
     updateSnake();
     drawSnake();   
     drawFood();
-    console.log(snake, food)
 }
 
 window.requestAnimationFrame(game);
 
 function drawSnake() {
     gameBoard.innerHTML = "";
-    snake.forEach ( part => {
-        const snakePart = document.createElement('div');
-        snakePart.setAttribute("id", "snake");
-        snakePart.style.gridColumnStart = part.y;
-        snakePart.style.gridRowStart = part.x;
-        gameBoard.appendChild(snakePart);
-    })
+    for(var i = 0; i < 2; ++i) {
+        const snakeBody = document.createElement('div');
+        snakeBody.setAttribute("id", "snake");
+        snakeBody.style.gridRowStart = snake[i].x;
+        snakeBody.style.gridColumnStart = snake[i].y;
+        gameBoard.appendChild(snakeBody);
+    }
 }
 
 function drawFood() {
@@ -43,20 +44,17 @@ function drawFood() {
 }
 
 function updateSnake() {
-    var inputFromKeyboard = returnInput();
-    for(var i = snake.length - 2; i >= 0; --i){
-        snake[i+1] = snake[i];
+    if(comparePosition(snake[0], food)) {
+        growSnake(growBy);
     }
+    
+    var inputFromKeyboard = returnInput();
 
     snake[0].x += inputFromKeyboard.x;
-    snake[0].y += inputFromKeyboard.y
+    snake[0].y += inputFromKeyboard.y;
+
 }
 
-function updateFood() {
-    if(snake.includes(food)) {
-        moveFood();
-    }
-}
 window.addEventListener('keydown', e => {
     switch(e.key) {
         case "ArrowUp":
@@ -91,7 +89,23 @@ function returnInput() {
     return inputKey;
 }
 
-function moveFood() {
-    food.x = Math.floor(Math.random() * (20 -1) + 1);
-    food.y = Math.floor(Math.random() * (20 -1) + 1);
+
+function updateFood() {
+    if(comparePosition(snake[0], food)) {
+       food.x = Math.floor(Math.random() * (20 - 1) + 1);
+       food.y = Math.floor(Math.random() * (20 - 1) + 1);
+    }
+}
+
+function comparePosition(first, second) {
+    if(first.x === second.x && first.y === second.y) {
+        return true;
+    }
+    return false;
+}
+
+function growSnake(len) {
+    for(var i = 0; i < len; ++i){
+        snake.push(snake[0]);
+    }
 }
