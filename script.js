@@ -1,7 +1,7 @@
 const snakeSpeed = 5;
 var LastRender = 0;
 const gameBoard = document.getElementById('game');
-const snake = [{x:9, y:6}, {x:9, y: 5}];
+const snake = [{x:9, y:6}, {x:9, y: 5}, {x: 9, y: 4}];
 var inputKey = {x:0, y:0};
 let lastImput = {x: 0, y: 0};
 const growBy = 2;
@@ -44,14 +44,12 @@ function drawFood() {
 
 function updateSnake() {
     var inputFromKeyboard = returnInput();
-    for(var i = snake.length-1; i >= 0; --i){
-        snake[i].x += inputFromKeyboard.x;
-        snake[i].y += inputFromKeyboard.y;
+    for(var i = snake.length-2; i >= 0; --i){
+       snake[i +1] = {...snake[i]};
     }
-    if(comparePosition(snake[0], food)) {
-        snake.push(snake[snake.length - 1]);
-    }
-
+    
+    snake[0].x += inputFromKeyboard.x;
+    snake[0].y += inputFromKeyboard.y;
 
 }
 
@@ -92,8 +90,12 @@ function returnInput() {
 
 function updateFood() {
     if(comparePosition(snake[0], food)) {
-       food.x = Math.floor(Math.random() * (20 - 1) + 1);
-       food.y = Math.floor(Math.random() * (20 - 1) + 1);
+        food.x = Math.floor(Math.random() * (20 - 1) + 1);
+        food.y = Math.floor(Math.random() * (20 - 1) + 1);
+        for(var i = 0; i <growBy; ++i){
+            snake.push(snake[snake.length - 1])
+        }
+      
     }
 }
 
