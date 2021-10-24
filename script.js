@@ -1,12 +1,15 @@
-const snakeSpeed = 5;
+const snakeSpeed = 10;
 var LastRender = 0;
 const gameBoard = document.getElementById('game');
-const snake = [{x:9, y:6}, {x:9, y: 5}, {x: 9, y: 4}];
+const snake = [{x:9, y:6}, {x:9, y:5}, {x:9, y:4}];
 var inputKey = {x:0, y:0};
 let lastImput = {x: 0, y: 0};
-const growBy = 2;
+const growBy = 3;
 const food = {x: Math.floor(Math.random() * (20 - 1) +1),
                 y : Math.floor(Math.random() * (20 - 1) +1)}
+const score = document.getElementById("score");
+var finalScore = 0;
+var keyPressed = 0;
 document.getElementById("game-over").style.visibility = "hidden";
 
 function game(currentTime) {
@@ -16,10 +19,14 @@ function game(currentTime) {
         return;
     }
     LastRender = currentTime;
+    if(checkForGameOver()) {
+        if(!alert("you lose")){window.location.reload()}   
+    };
     updateFood();
     updateSnake();
     drawSnake();   
-    drawFood();
+    drawFood();    
+    
 }
 
 window.requestAnimationFrame(game);
@@ -34,6 +41,7 @@ function drawSnake () {
         gameBoard.appendChild(snakeBody);
     })
 }
+
 function drawFood() {
     const foodPard = document.createElement('div');
     foodPard.setAttribute("id", "food");
@@ -44,9 +52,12 @@ function drawFood() {
 
 function updateSnake() {
     var inputFromKeyboard = returnInput();
-    for(var i = snake.length-2; i >= 0; --i){
-       snake[i +1] = {...snake[i]};
+    if(keyPressed != 0) {
+            for(var i = snake.length-2; i >= 0; --i) {
+            snake[i +1] = {...snake[i]};
+        }
     }
+    
     
     snake[0].x += inputFromKeyboard.x;
     snake[0].y += inputFromKeyboard.y;
@@ -56,27 +67,31 @@ function updateSnake() {
 window.addEventListener('keydown', e => {
     switch(e.key) {
         case "ArrowUp":
-        if(lastImput.x !== 0 ){
+        if(lastImput.x !== 0 ) {
             break;
         }
+        keyPressed = 1;
         inputKey = {x : -1, y: 0};
         break;
         case "ArrowDown": 
-        if(lastImput.x !== 0 ){
+        if(lastImput.x !== 0 ) {
             break;
         }
+        keyPressed = 1;
         inputKey = {x: 1, y: 0 };
         break;
         case "ArrowLeft":
-        if(lastImput.y !== 0 ){
+        if(lastImput.y !== 0 ) {
             break;
         }
+        keyPressed = 1;
         inputKey = {x : 0, y : -1};
         break;
         case "ArrowRight":
-        if(lastImput.y !== 0 ){
+        if(lastImput.y !== 0 ) {
             break;
         }
+        keyPressed = 1;
         inputKey = {x: 0, y : 1};
         break;
     }
@@ -87,15 +102,15 @@ function returnInput() {
     return inputKey;
 }
 
-
 function updateFood() {
+    var count = 0;
     if(comparePosition(snake[0], food)) {
-        food.x = Math.floor(Math.random() * (20 - 1) + 1);
-        food.y = Math.floor(Math.random() * (20 - 1) + 1);
-        for(var i = 0; i <growBy; ++i){
+        ++finalScore;
+        score.innerHTML = "score "+ finalScore;
+        for(var i = 0; i < growBy; ++i){
             snake.push(snake[snake.length - 1])
         }
-      
+        moveFood();
     }
 }
 
@@ -107,7 +122,29 @@ function comparePosition(first, second) {
 }
 
 function growSnake(len) {
-    for(var i = 0; i < len; ++i){
+    for(var i = 0; i < len; ++i) {
         snake.push(snake[0]);
     }
+}
+
+function moveFood() {
+    for(var i = 0; i < snake.length; ++i) {
+        if(comparePosition(snake[i], food)){
+            food.x = Math.floor(Math.random() * (20 - 1) + 1);
+            food.y = Math.floor(Math.random() * (20 - 1) + 1);
+            i = 0;
+        }
+    }
+}
+
+function checkForGameOver() {
+    for(var i = 2; i < snake.length; ++i) {
+        if((snake[0].x == snake[i].x && snake[0].y == snake[i].y)) {
+            return true;
+        }
+    }
+    if((snake[0].x == 21 || snake[0].x == 0 || snake[0].y == 21 || snake[0].y == 0)) {
+        return true
+    }
+    return false;
 }
