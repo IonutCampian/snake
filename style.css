@@ -17,7 +17,7 @@ body {
 }
 #snake {
     border-radius: 10px;
-    background-color: gray;
+    background-color: white;
     border: solid, black ,1vmin;
     border-radius: 1vmin;
 }
